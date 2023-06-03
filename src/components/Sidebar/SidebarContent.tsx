@@ -1,12 +1,8 @@
-import React from 'react'
-import routes from '../../routes/sidebar'
-import { NavLink, Routes, Route, Link } from 'react-router-dom'
-import { Icons } from '../../icons'
-import SidebarSubmenu from './SidebarSubmenu'
-import { Button } from '@windmill/react-ui'
-import { IconProps } from 'react-toastify'
-import { TypeOf } from 'yup'
 import Logo from 'assets/img/logo.png'
+import { Link, NavLink, Route, Routes } from 'react-router-dom'
+import { Icons } from '../../icons'
+import routes from '../../routes/sidebar'
+import SidebarSubmenu from './SidebarSubmenu'
 
 function Icon({ icon, ...props }: { icon: string; [key: string]: any }) {
   const Icon = Icons[icon]
@@ -17,7 +13,7 @@ function SidebarContent() {
   return (
     <div className="py-4 text-gray-500 dark:text-gray-400 text-center">
       <Link to="/dashboard">
-        <img src={Logo} alt="logo" className="ml-8 h-12" />
+        <img src={Logo} alt="logo" className="ml-8 h-8" />
       </Link>
 
       <ul className="mt-6">
