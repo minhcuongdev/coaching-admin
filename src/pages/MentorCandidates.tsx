@@ -19,7 +19,9 @@ import {
   Avatar,
   Button,
   Pagination,
+  Label,
 } from '@windmill/react-ui'
+import { Checkbox } from '@mui/material'
 import DefaultAvatar from 'assets/img/unnamed.png'
 import { Icons } from 'icons'
 import { Mentor } from 'models'
@@ -27,13 +29,14 @@ import Modals from 'components/Modals/Modals'
 import { acceptCandidate } from 'features/candidate/acceptCandidate'
 import { toast } from 'react-toastify'
 
-const { EditIcon } = Icons
+const { ViewIcon } = Icons
 function MentorCandidates() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
   const [searchEmail, setSearchEmail] = useState('')
   // const [isAsc, setIsAsc] = useState(true)
   const [showAcceptMentorModal, setShowAcceptMentorModal] = useState(false)
+  const [showRejectMentorModal, setShowRejectMentorModal] = useState(false)
   const [selectedCandidate, setSelectedCandidate] = useState<Mentor | null>(
     null
   )
@@ -103,13 +106,50 @@ function MentorCandidates() {
     </>
   )
 
+  const rejectMentorActions = (
+    <>
+      <div className="hidden sm:block">
+        <Button layout="outline" onClick={handleCloseRejectMentorModal}>
+          Hủy
+        </Button>
+      </div>
+      <div className="hidden sm:block">
+        <Button onClick={handleRejectCandidate}>Đồng ý</Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button
+          block
+          size="large"
+          layout="outline"
+          onClick={handleCloseRejectMentorModal}
+        >
+          Hủy
+        </Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button block size="large" onClick={handleRejectCandidate}>
+          Đồng ý
+        </Button>
+      </div>
+    </>
+  )
+
   function handleOpenAcceptMentorModal(candidate: Mentor) {
     setSelectedCandidate(candidate)
     setShowAcceptMentorModal(true)
   }
 
+  function handleOpenRejectMentorModal(candidate: Mentor) {
+    setSelectedCandidate(candidate)
+    setShowRejectMentorModal(true)
+  }
+
   function handleCloseAcceptMentorModal() {
     setShowAcceptMentorModal(false)
+  }
+
+  function handleCloseRejectMentorModal() {
+    setShowRejectMentorModal(false)
   }
 
   async function handleAcceptCandidate() {
@@ -122,6 +162,11 @@ function MentorCandidates() {
     } else {
       toast.error('Duyệt thất bại')
     }
+  }
+
+  async function handleRejectCandidate() {
+    setShowRejectMentorModal(false)
+    toast.success('Từ chối thành công')
   }
 
   return (
@@ -199,11 +244,17 @@ function MentorCandidates() {
                     <div className="flex justify-center items-center space-x-1">
                       <Link to={`/mentors/${user.id}`}>
                         <Button layout="link" size="small" aria-label="Edit">
-                          <EditIcon className="w-5 h-5" aria-hidden="true" />
+                          <ViewIcon className="w-5 h-5" aria-hidden="true" />
                         </Button>
                       </Link>
                       <Button onClick={() => handleOpenAcceptMentorModal(user)}>
                         Duyệt
+                      </Button>
+                      <Button
+                        className="bg-red-500 hover:bg-red-600 focus:ring-red-400 active:bg-red-500"
+                        onClick={() => handleOpenRejectMentorModal(user)}
+                      >
+                        Từ chối
                       </Button>
                     </div>
                   </TableCell>
@@ -230,6 +281,45 @@ function MentorCandidates() {
       >
         <div>
           <p>{`Bạn chắc chắn muốn duyệt ứng viên ${selectedCandidate?.name} thành mentor?`}</p>
+        </div>
+      </Modals>
+      <Modals
+        isOpenModal={showRejectMentorModal}
+        actions={rejectMentorActions}
+        header="Từ chối mentor"
+        setClose={() => setShowRejectMentorModal(false)}
+      >
+        <div>
+          <p>{`Bạn chắc chắn muốn Từ chối ứng viên ${selectedCandidate?.name} thành mentor?`}</p>
+          <div className="mt-4">
+            <p className="mb-2">Lý do từ chối:</p>
+            <Label check>
+              <Input css="" type="checkbox" />
+              <span className="ml-2">Chưa thực hiện xác minh danh tính</span>
+            </Label>
+            <Label check>
+              <Input css="" type="checkbox" />
+              <span className="ml-2">
+                Thông tin xác thực không trùng khớp với thông tin đăng ký
+              </span>
+            </Label>
+            <Label check>
+              <Input css="" type="checkbox" />
+              <span className="ml-2">
+                Lĩnh vực và chuyên mục đăng ký không phù hợp
+              </span>
+            </Label>
+            <Label check>
+              <Input css="" type="checkbox" />
+              <span className="ml-2">Chưa đủ số năm kinh nghiệm</span>
+            </Label>
+            <Label check>
+              <Input css="" type="checkbox" />
+              <span className="ml-2">
+                Chưa đạt yêu cầu khi kiểm duyệt chất lượng
+              </span>
+            </Label>
+          </div>
         </div>
       </Modals>
     </>

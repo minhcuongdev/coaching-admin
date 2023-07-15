@@ -27,7 +27,7 @@ import { toast } from 'react-toastify'
 import { lockMentor } from 'features/mentor/lockMentor'
 import { unlockMentor } from 'features/mentor/unlockMentor'
 
-const { EditIcon, LockIcon, UnlockIcon } = Icons
+const { ViewIcon, LockIcon, UnlockIcon } = Icons
 function MentorPage() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
@@ -175,7 +175,7 @@ function MentorPage() {
                     <div className="flex justify-center items-center space-x-4">
                       <Link to={`/mentors/${user.id}`}>
                         <Button layout="link" size="small" aria-label="Edit">
-                          <EditIcon className="w-5 h-5" aria-hidden="true" />
+                          <ViewIcon className="w-5 h-5" aria-hidden="true" />
                         </Button>
                       </Link>
 

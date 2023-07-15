@@ -1,5 +1,5 @@
 import ImageDark from '../assets/img/login-office-dark.jpeg'
-import ImageLight from '../assets/img/login-office.jpeg'
+import ImageLight from '../assets/img/login-office.jpg'
 // import { GithubIcon, TwitterIcon } from '../icons';
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, HelperText, Input, Label } from '@windmill/react-ui'

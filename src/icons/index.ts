@@ -8,6 +8,7 @@ import { ReactComponent as PagesIcon } from './pages.svg'
 import { ReactComponent as TablesIcon } from './tables.svg'
 import { ReactComponent as HeartIcon } from './heart.svg'
 import { ReactComponent as EditIcon } from './edit.svg'
+import { ReactComponent as ViewIcon } from './view.svg'
 import { ReactComponent as TrashIcon } from './trash.svg'
 import { ReactComponent as ForbiddenIcon } from './forbidden.svg'
 import { ReactComponent as GithubIcon } from './github.svg'
@@ -52,6 +53,7 @@ export const Icons: myIcons = {
   TablesIcon,
   HeartIcon,
   EditIcon,
+  ViewIcon,
   TrashIcon,
   ForbiddenIcon,
   GithubIcon,

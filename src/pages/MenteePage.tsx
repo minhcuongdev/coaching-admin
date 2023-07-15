@@ -30,7 +30,7 @@ import Modals from 'components/Modals/Modals'
 import { Icons } from 'icons'
 import { Mentee } from 'models'
 
-const { EditIcon, MoneyIcon, LockIcon, UnlockIcon } = Icons
+const { ViewIcon, MoneyIcon, LockIcon, UnlockIcon } = Icons
 function MenteePage() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
@@ -233,7 +233,7 @@ function MenteePage() {
                     <div className="flex justify-center items-center space-x-1">
                       <Link to={`/mentees/${user.id}`}>
                         <Button layout="link" size="small" aria-label="Edit">
-                          <EditIcon
+                          <ViewIcon
                             className="w-5 h-5 text-blue-500"
                             aria-hidden="true"
                           />

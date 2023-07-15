@@ -173,7 +173,7 @@ function OrderPage() {
                     </button>
                   </div>
                 </TableCell>
-                <TableCell className="text-center">Hành động</TableCell>
+                {/* <TableCell className="text-center">Hành động</TableCell> */}
               </tr>
             </TableHeader>
             <TableBody>

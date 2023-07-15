@@ -23,7 +23,7 @@ import {
 import DefaultAvatar from 'assets/img/unnamed.png'
 import { Icons } from 'icons'
 
-const { EditIcon, SortIcon } = Icons
+const { ViewIcon, SortIcon } = Icons
 function AdminPage() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
@@ -159,7 +159,7 @@ function AdminPage() {
                     <div className="flex justify-center items-center space-x-4">
                       <Link to={`/admins/${user.id}`}>
                         <Button layout="link" size="small" aria-label="Edit">
-                          <EditIcon className="w-5 h-5" aria-hidden="true" />
+                          <ViewIcon className="w-5 h-5" aria-hidden="true" />
                         </Button>
                       </Link>
                     </div>
