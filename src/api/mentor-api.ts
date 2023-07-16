@@ -23,6 +23,9 @@ export const mentorApi = {
   acceptCandidate: (id: string) => {
     return axiosClient.post(`/mentor/${id}/accept`)
   },
+  rejectCandidate: (id: string, reasons: string[]) => {
+    return axiosClient.post(`/mentor/${id}/reject`, reasons)
+  },
   lockMentor: (mentorId: string) => {
     return axiosClient.patch(`/users/${mentorId}/lock`)
   },

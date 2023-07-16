@@ -13,6 +13,7 @@ export const lockMentor = createAsyncThunk<
 >('mentor/lockMentor', async (mentorId: string, thunkApi) => {
   try {
     const res = await mentorApi.lockMentor(mentorId)
+    console.log(res.data)
     return res.data as Mentor
   } catch (error) {
     return thunkApi.rejectWithValue({

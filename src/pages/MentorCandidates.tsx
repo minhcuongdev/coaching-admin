@@ -21,19 +21,28 @@ import {
   Pagination,
   Label,
 } from '@windmill/react-ui'
-import { Checkbox } from '@mui/material'
 import DefaultAvatar from 'assets/img/unnamed.png'
 import { Icons } from 'icons'
 import { Mentor } from 'models'
 import Modals from 'components/Modals/Modals'
 import { acceptCandidate } from 'features/candidate/acceptCandidate'
 import { toast } from 'react-toastify'
+import { rejectCandidate } from 'features/candidate/rejectCandidate'
 
 const { ViewIcon } = Icons
 function MentorCandidates() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
   const [searchEmail, setSearchEmail] = useState('')
+  const [rejectReasons, setRejectReasons] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+    '',
+  ])
+  const [openDifferentReason, setOpenDifferentReason] = useState(false)
+  const [differentReasonValue, setDifferentReasonValue] = useState('')
   // const [isAsc, setIsAsc] = useState(true)
   const [showAcceptMentorModal, setShowAcceptMentorModal] = useState(false)
   const [showRejectMentorModal, setShowRejectMentorModal] = useState(false)
@@ -114,7 +123,12 @@ function MentorCandidates() {
         </Button>
       </div>
       <div className="hidden sm:block">
-        <Button onClick={handleRejectCandidate}>Đồng ý</Button>
+        <Button
+          disabled={rejectReasons.every((reason) => reason === '')}
+          onClick={handleRejectCandidate}
+        >
+          Đồng ý
+        </Button>
       </div>
       <div className="block w-full sm:hidden">
         <Button
@@ -127,7 +141,12 @@ function MentorCandidates() {
         </Button>
       </div>
       <div className="block w-full sm:hidden">
-        <Button block size="large" onClick={handleRejectCandidate}>
+        <Button
+          disabled={rejectReasons.every((reason) => reason === '')}
+          block
+          size="large"
+          onClick={handleRejectCandidate}
+        >
           Đồng ý
         </Button>
       </div>
@@ -150,6 +169,7 @@ function MentorCandidates() {
 
   function handleCloseRejectMentorModal() {
     setShowRejectMentorModal(false)
+    resetReasons()
   }
 
   async function handleAcceptCandidate() {
@@ -165,8 +185,34 @@ function MentorCandidates() {
   }
 
   async function handleRejectCandidate() {
-    setShowRejectMentorModal(false)
-    toast.success('Từ chối thành công')
+    if (differentReasonValue) {
+      rejectReasons.push(differentReasonValue)
+      setRejectReasons(rejectReasons)
+    }
+    const actionResult = await dispatch(
+      rejectCandidate({
+        id: selectedCandidate?.id ?? '',
+        reasons: rejectReasons,
+      })
+    )
+    if (rejectCandidate.fulfilled.match(actionResult)) {
+      setShowRejectMentorModal(false)
+      resetReasons()
+      toast.success('Từ chối thành công')
+    } else {
+      toast.error('Từ chối thất bại')
+    }
+  }
+
+  function handleReasons(index: number, reason: string) {
+    rejectReasons[index] = reason
+    setRejectReasons([...rejectReasons])
+  }
+
+  function resetReasons() {
+    setRejectReasons(['', '', '', '', ''])
+    setOpenDifferentReason(false)
+    setDifferentReasonValue('')
   }
 
   return (
@@ -291,34 +337,111 @@ function MentorCandidates() {
       >
         <div>
           <p>{`Bạn chắc chắn muốn Từ chối ứng viên ${selectedCandidate?.name} thành mentor?`}</p>
-          <div className="mt-4">
+          <div className="mt-4 flex flex-col gap-2">
             <p className="mb-2">Lý do từ chối:</p>
             <Label check>
-              <Input css="" type="checkbox" />
+              <Input
+                css=""
+                type="checkbox"
+                value={'Chưa thực hiện xác minh danh tính'}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleReasons(0, e.target.value)
+                  } else {
+                    handleReasons(0, '')
+                  }
+                }}
+              />
               <span className="ml-2">Chưa thực hiện xác minh danh tính</span>
             </Label>
             <Label check>
-              <Input css="" type="checkbox" />
+              <Input
+                css=""
+                value={
+                  'Thông tin xác thực không trùng khớp với thông tin đăng ký'
+                }
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleReasons(1, e.target.value)
+                  } else {
+                    handleReasons(1, '')
+                  }
+                }}
+              />
               <span className="ml-2">
                 Thông tin xác thực không trùng khớp với thông tin đăng ký
               </span>
             </Label>
             <Label check>
-              <Input css="" type="checkbox" />
+              <Input
+                css=""
+                type="checkbox"
+                value={'Lĩnh vực và chuyên mục đăng ký không phù hợp'}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleReasons(2, e.target.value)
+                  } else {
+                    handleReasons(2, '')
+                  }
+                }}
+              />
               <span className="ml-2">
                 Lĩnh vực và chuyên mục đăng ký không phù hợp
               </span>
             </Label>
             <Label check>
-              <Input css="" type="checkbox" />
+              <Input
+                css=""
+                type="checkbox"
+                value={'Chưa đủ số năm kinh nghiệm'}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleReasons(3, e.target.value)
+                  } else {
+                    handleReasons(3, '')
+                  }
+                }}
+              />
               <span className="ml-2">Chưa đủ số năm kinh nghiệm</span>
             </Label>
             <Label check>
-              <Input css="" type="checkbox" />
+              <Input
+                css=""
+                type="checkbox"
+                value={'Chưa đạt yêu cầu khi kiểm duyệt chất lượng'}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleReasons(4, e.target.value)
+                  } else {
+                    handleReasons(4, '')
+                  }
+                }}
+              />
               <span className="ml-2">
                 Chưa đạt yêu cầu khi kiểm duyệt chất lượng
               </span>
             </Label>
+            <Label check>
+              <Input
+                css=""
+                type="checkbox"
+                checked={openDifferentReason}
+                onChange={() => {
+                  setOpenDifferentReason(!openDifferentReason)
+                }}
+              />
+              <span className="ml-2">Khác:</span>
+            </Label>
+            {openDifferentReason ? (
+              <Input
+                css=""
+                aria-label="Bad"
+                placeholder="Nhập lý do khác..."
+                value={differentReasonValue}
+                onChange={(e) => setDifferentReasonValue(e.currentTarget.value)}
+              />
+            ) : null}
           </div>
         </div>
       </Modals>

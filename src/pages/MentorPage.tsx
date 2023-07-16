@@ -26,12 +26,16 @@ import { Mentor } from 'models'
 import { toast } from 'react-toastify'
 import { lockMentor } from 'features/mentor/lockMentor'
 import { unlockMentor } from 'features/mentor/unlockMentor'
+import Modals from 'components/Modals/Modals'
 
 const { ViewIcon, LockIcon, UnlockIcon } = Icons
 function MentorPage() {
   const [pageTable, setPageTable] = useState(1)
   const [searchName, setSearchName] = useState('')
   const [searchEmail, setSearchEmail] = useState('')
+  const [openLockModal, setOpenLockModal] = useState(false)
+  const [openUnLockModal, setOpenUnLockModal] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<Mentor | null>(null)
   // const [isAsc, setIsAsc] = useState(true)
   const dispatch = useAppDispatch()
   const { mentors } = useAppSelector(selectMentors)
@@ -72,7 +76,8 @@ function MentorPage() {
   //   setIsAsc(!isAsc)
   // }
 
-  async function handleLockUser(user: Mentor) {
+  async function handleLockUser(user: Mentor | null) {
+    if (user === null) return
     if (user.isActive) {
       const actionResult = await dispatch(lockMentor(user.id))
       if (lockMentor.fulfilled.match(actionResult)) {
@@ -89,6 +94,90 @@ function MentorPage() {
       }
     }
   }
+
+  const lockActions = (
+    <>
+      <div className="hidden sm:block">
+        <Button layout="outline" onClick={() => setOpenLockModal(false)}>
+          Hủy
+        </Button>
+      </div>
+      <div className="hidden sm:block">
+        <Button
+          onClick={() => {
+            handleLockUser(selectedUser)
+            setOpenLockModal(false)
+          }}
+        >
+          Đồng ý
+        </Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button
+          block
+          size="large"
+          layout="outline"
+          onClick={() => setOpenLockModal(false)}
+        >
+          Hủy
+        </Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button
+          block
+          size="large"
+          onClick={() => {
+            handleLockUser(selectedUser)
+            setOpenLockModal(false)
+          }}
+        >
+          Đồng ý
+        </Button>
+      </div>
+    </>
+  )
+
+  const unLockActions = (
+    <>
+      <div className="hidden sm:block">
+        <Button layout="outline" onClick={() => setOpenUnLockModal(false)}>
+          Hủy
+        </Button>
+      </div>
+      <div className="hidden sm:block">
+        <Button
+          onClick={() => {
+            handleLockUser(selectedUser)
+            setOpenUnLockModal(false)
+          }}
+        >
+          Đồng ý
+        </Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button
+          block
+          size="large"
+          layout="outline"
+          onClick={() => setOpenUnLockModal(false)}
+        >
+          Hủy
+        </Button>
+      </div>
+      <div className="block w-full sm:hidden">
+        <Button
+          block
+          size="large"
+          onClick={() => {
+            handleLockUser(selectedUser)
+            setOpenUnLockModal(false)
+          }}
+        >
+          Đồng ý
+        </Button>
+      </div>
+    </>
+  )
 
   return (
     <>
@@ -135,7 +224,7 @@ function MentorPage() {
             </TableHeader>
             <TableBody>
               {dataTable?.map((user: Mentor, i: number) => (
-                <TableRow key={i}>
+                <TableRow key={user.id}>
                   <TableCell>
                     <div className="flex items-center text-sm">
                       <Avatar
@@ -184,7 +273,10 @@ function MentorPage() {
                           layout="link"
                           size="small"
                           aria-label="Delete"
-                          onClick={() => handleLockUser(user)}
+                          onClick={() => {
+                            setSelectedUser(user)
+                            setOpenLockModal(true)
+                          }}
                         >
                           <LockIcon
                             className="w-5 h-5 text-red-500"
@@ -196,7 +288,10 @@ function MentorPage() {
                           layout="link"
                           size="small"
                           aria-label="Delete"
-                          onClick={() => handleLockUser(user)}
+                          onClick={() => {
+                            setSelectedUser(user)
+                            setOpenUnLockModal(true)
+                          }}
                         >
                           <UnlockIcon
                             className="w-5 h-5 text-red-500"
@@ -220,6 +315,26 @@ function MentorPage() {
           </TableFooter>
         </TableContainer>
       )}
+      <Modals
+        isOpenModal={openLockModal}
+        actions={lockActions}
+        header="Khoá tài khoản mentor"
+        setClose={() => setOpenLockModal(false)}
+      >
+        <div>
+          <p>Bạn có chắc muốn khoá tài khoản {selectedUser?.name} ?</p>
+        </div>
+      </Modals>
+      <Modals
+        isOpenModal={openUnLockModal}
+        actions={unLockActions}
+        header="Mở khoá khoản mentor"
+        setClose={() => setOpenLockModal(false)}
+      >
+        <div>
+          <p>Bạn có chắc muốn khoá mở khoá tài khoản {selectedUser?.name} ?</p>
+        </div>
+      </Modals>
     </>
   )
 }

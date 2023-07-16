@@ -4,6 +4,7 @@ import { Mentor } from 'models'
 import { fetchCandidates } from './fetchCandidates'
 import { acceptCandidate } from './acceptCandidate'
 import { object } from 'yup'
+import { rejectCandidate } from './rejectCandidate'
 
 export interface CandidateSlice {
   candidates: Mentor[]
@@ -34,10 +35,15 @@ export const candidateSlice = createSlice({
       )
       state.candidates.splice(index, 1)
     })
+
+    builder.addCase(rejectCandidate.fulfilled, (state, action) => {
+      state.candidates = state.candidates.filter(
+        (candidate) => candidate.id !== action.payload
+      )
+    })
   },
 })
 
 export const selectCandidates = (state: RootState) => state.candidates
 
 export default candidateSlice.reducer
-
